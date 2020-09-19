@@ -1,0 +1,1 @@
+DB_CREDENTIALS='postgresql://postgres:rafadb@localhost/note-taking-db'
