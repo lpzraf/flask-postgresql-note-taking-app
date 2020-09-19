@@ -23,10 +23,11 @@ modus = Modus(app)
 date = datetime.datetime.now().strftime('%A, %b %d, %Y')
 
 class User(db.Model):
-    __tablename__ = 'users'
+    __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True)
-    password = db.Column(db.String(80), unique=True)
+    username = db.Column(db.String(20), unique=True)
+    password = db.Column(db.String(20), unique=True)
+    notes = db.relationship('Note', backref='user')
 
     def __init__(self,username,password):
         self.username = username
@@ -36,16 +37,17 @@ class User(db.Model):
         return '<User %r>' % self.username
 
 class Note(db.Model):
-    __tablename__ = 'notes'
+    __tablename__ = 'note'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(80), nullable=False)
     date = db.Column(db.String(80))
     note_body = db.Column(db.String(280), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-    def __init__(self,title,date,note_body):
-        self.title = title
-        self.date = date
-        self.note_body = note_body
+    # def __init__(self,title,date,note_body):
+    #     self.title = title
+    #     self.date = date
+    #     self.note_body = note_body
 
 
 
