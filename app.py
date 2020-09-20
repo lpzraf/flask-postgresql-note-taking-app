@@ -70,6 +70,27 @@ def index():
 def new():
     return render_template('users/new.html')
 
+# users edit
+@app.route('/users/<int:id>/edit')
+def edit(id):
+    return render_template('users/edit.html', user=User.query.get(id))
+
+# users show
+@app.route('/users/<int:id>', methods=['GET', 'PATCH', 'DELETE'])
+def show(id):
+    found_user = User.query.get(id)
+    if request.method == b'PATCH':
+        found_user.username = request.form['username']
+        found_user.password = request.form['password']
+        db.session.add(found_user)
+        db.session.commit()
+        return redirect(url_for('index'))
+    if request.method == b'DELETE':
+        db.session.delete(found_user)
+        db.session.commit()
+        return redirect(url_for('index'))
+    return render_template('users/show.html', user=found_user)
+
 
 ###### old code
 # about

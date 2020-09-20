@@ -10,13 +10,15 @@
             <div class="ui clearing divider"></div>
             <h2>Current Users</h2>
             <p>{{ date }} - <span id="clock"></span></p>
-            <ol> 
+            <button class="ui button"><a href="{{ url_for('new') }}">Add a New User</a></button> 
                 {% for user in users %} 
-                    <li>{{user.username}}</li> 
+                    <p>{{user.username}}</p>
+                    <br>
+                    <button class="ui button"><a href="{{ url_for('edit', id=user.id) }}">Edit User</a></button>
+                    <form class="ui button" action="{{url_for('show', id=user.id)}}?_method=DELETE" method="POST">
+                        <input type="submit" value="X">
+                    </form> 
                 {% endfor %} 
-            </ol> 
-            <button class="ui button"><a href="{{ url_for('new') }}">Add a New User</a></button>
-            <button class="ui button"><a href="{{ url_for('add_note') }}">Add a New Note</a></button>
         </div>
     </div>
 
