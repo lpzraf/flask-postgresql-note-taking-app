@@ -40,15 +40,9 @@ class Note(db.Model):
     __tablename__ = 'note'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(80), nullable=False)
-    date = db.Column(db.String(80))
+    date = db.Column(db.DateTime)
     note_body = db.Column(db.String(280), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-
-    # def __init__(self,title,date,note_body):
-    #     self.title = title
-    #     self.date = date
-    #     self.note_body = note_body
-
 
 
 # about
