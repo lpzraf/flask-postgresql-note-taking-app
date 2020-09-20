@@ -12,22 +12,22 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = DB_CREDENTIALS
 db = SQLAlchemy(app)
-# db.init_app(app)
-# with app.app_context():
-#     db.create_all()
+db.init_app(app)
+with app.app_context():
+    db.create_all()
 
 
 app.secret_key = 'supermegadupersecretkey'
-modus = Modus(app)
+modus = Modus(app) # for overwriting http methods
 
 date = datetime.datetime.now().strftime('%A, %b %d, %Y')
 
 class User(db.Model):
-    __tablename__ = 'user'
+    __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True)
     password = db.Column(db.String(20), unique=True)
-    notes = db.relationship('Note', backref='user')
+    # notes = db.relationship('Note', backref='user')
 
     def __init__(self,username,password):
         self.username = username
@@ -36,15 +36,42 @@ class User(db.Model):
     def __repr__(self):
         return '<User %r>' % self.username
 
-class Note(db.Model):
-    __tablename__ = 'note'
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(80), nullable=False)
-    date = db.Column(db.DateTime)
-    note_body = db.Column(db.String(280), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+# class Note(db.Model):
+#     __tablename__ = 'notes'
+#     id = db.Column(db.Integer, primary_key=True)
+#     title = db.Column(db.String(80), nullable=False)
+#     date = db.Column(db.DateTime)
+#     note_body = db.Column(db.String(280), nullable=False)
+#     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+#     def __init__(self,title,date,note_body):
+#         self.title = title
+#         self.date = date
+#         self.note_body = note_body
 
 
+# root
+@app.route('/')
+def root():
+    return redirect(url_for('index.html'))
+
+# users home
+@app.route('/users', methods=['GET', 'POST'])
+def index():
+    if request.method == 'POST':
+        new_user = User(request.form['username'], request.form['password'])
+        db.session.add(new_user)
+        db.session.commit()
+        return redirect(url_for('index'))
+    return render_template('users/index.html', users=User.query.all())
+
+# users new
+@app.route('/users/new')
+def new():
+    return render_template('users/new.html')
+
+
+###### old code
 # about
 @app.route('/about')
 def about():
