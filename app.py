@@ -27,7 +27,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True)
     password = db.Column(db.String(20), unique=True)
-    # notes = db.relationship('Note', backref='user')
+    notes = db.relationship('Note', backref='user', lazy='dynamic')
 
     def __init__(self,username,password):
         self.username = username
@@ -36,18 +36,19 @@ class User(db.Model):
     def __repr__(self):
         return '<User %r>' % self.username
 
-# class Note(db.Model):
-#     __tablename__ = 'notes'
-#     id = db.Column(db.Integer, primary_key=True)
-#     title = db.Column(db.String(80), nullable=False)
-#     date = db.Column(db.DateTime)
-#     note_body = db.Column(db.String(280), nullable=False)
-#     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+class Note(db.Model):
+    __tablename__ = 'notes'
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(80), nullable=False)
+    date = db.Column(db.DateTime)
+    note_body = db.Column(db.String(280), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-#     def __init__(self,title,date,note_body):
-#         self.title = title
-#         self.date = date
-#         self.note_body = note_body
+    def __init__(self,title,date,note_body, user_id):
+        self.title = title
+        self.date = date
+        self.note_body = note_body
+        self.user_id = user_id
 
 
 # root
@@ -90,6 +91,43 @@ def show(id):
         db.session.commit()
         return redirect(url_for('index'))
     return render_template('users/show.html', user=found_user)
+
+# notes index
+@app.route('/users/<int:user_id>/notes', methods=['GET', 'POST'])
+def notes_index(user_id):
+    if request.method == 'POST':
+        new_notes = Note(request.form['title'], datetime.datetime.now(), request.form['note_body'],user_id)
+        db.session.add(new_notes)
+        db.session.commit()
+        return redirect(url_for('notes_index', user_id=user_id)) 
+    return render_template('notes/index.html', user=User.query.get(user_id))
+
+# notes new
+@app.route('/users/<int:user_id>/notes/new', methods=['GET', 'POST'])
+def notes_new(user_id):
+    return render_template('notes/new.html', user=User.query.get(user_id))
+
+# notes edit
+@app.route('/users/<int:user_id>/notes/<int:id>/edit')
+def notes_edit(user_id,id):
+    found_note = Note.query.get(id)
+    return render_template('notes/edit.html', note=found_note)
+
+# notes delete
+@app.route('/users/<int:user_id>/notes/<int:id>',  methods=['GET', 'PATCH' ,'POST'])
+def notes_show(user_id,id):
+    found_note = Note.query.get(id)
+    if request.method == b"PATCH":
+        found_note.title = request.form["title"]
+        found_note.note_body = request.form["note_body"]
+        db.session.add(found_note)
+        db.session.commit()
+        return redirect(url_for('notes_index', user_id=user_id))
+    if request.method == b"DELETE":
+        db.session.delete(found_note)
+        db.session.commit()
+        return redirect(url_for('notes_index', user_id=user_id))
+    return render_template('notes/show.html', note=found_note)
 
 
 ###### old code

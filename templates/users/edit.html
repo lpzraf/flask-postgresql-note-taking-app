@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Add a user{% endblock %}
+
+{% block content %}
+    
+    <div class="ui two column centered grid">
+        <div class="column"><div class="ui segment">
+            <h2 class="ui left floated header"><i class="pencil alternate icon"></i>Edit User</h2>
+            <div class="ui clearing divider"></div>
+            <p>Fillout the form to create an account.</p>
+
+            <form class="ui form" method="POST" action="{{url_for('show', id=user.id)}}?_method=PATCH">
+                <div class="field">
+                    <label>Username</label>
+                    <input type="text" name="username" value="{{ user.username }}">
+                </div>
+                <div class="field">
+                    <label>Password</label>
+                    <input type="text" name="password" value="{{ user.password }}">
+                </div>
+                <button class="ui button" type="submit">Save</button>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
