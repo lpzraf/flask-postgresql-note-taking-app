@@ -27,7 +27,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True)
     password = db.Column(db.String(20), unique=True)
-    notes = db.relationship('Note', backref='user', lazy='dynamic')
+    notes = db.relationship('Note', backref='user', lazy='dynamic', cascade="all,delete")
 
     def __init__(self,username,password):
         self.username = username
@@ -114,7 +114,7 @@ def notes_edit(user_id,id):
     return render_template('notes/edit.html', note=found_note)
 
 # notes delete
-@app.route('/users/<int:user_id>/notes/<int:id>',  methods=['GET', 'PATCH' ,'POST'])
+@app.route('/users/<int:user_id>/notes/<int:id>',  methods=['GET', 'PATCH' ,'DELETE'])
 def notes_show(user_id,id):
     found_note = Note.query.get(id)
     if request.method == b"PATCH":
