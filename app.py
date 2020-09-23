@@ -1,7 +1,8 @@
 from flask import (Flask, render_template, request, abort, 
                     redirect, url_for, jsonify,session,g, session)
 from flask_modus import Modus
-# from user import User
+from model import User, Note
+from forms import UserForm, NoteForm
 # from model import db, save_db, user_db, save_user_db
 from flask_sqlalchemy import SQLAlchemy
 import datetime
@@ -17,38 +18,10 @@ with app.app_context():
     db.create_all()
 
 
-app.secret_key = 'supermegadupersecretkey'
+app.secret_key = SECRET_KEY
 modus = Modus(app) # for overwriting http methods
 
 date = datetime.datetime.now().strftime('%A, %b %d, %Y')
-
-class User(db.Model):
-    __tablename__ = 'users'
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(20), unique=True)
-    password = db.Column(db.String(20), unique=True)
-    notes = db.relationship('Note', backref='user', lazy='dynamic', cascade="all,delete")
-
-    def __init__(self,username,password):
-        self.username = username
-        self.password = password
-    
-    def __repr__(self):
-        return '<User %r>' % self.username
-
-class Note(db.Model):
-    __tablename__ = 'notes'
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(80), nullable=False)
-    date = db.Column(db.DateTime)
-    note_body = db.Column(db.String(280), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-
-    def __init__(self,title,date,note_body, user_id):
-        self.title = title
-        self.date = date
-        self.note_body = note_body
-        self.user_id = user_id
 
 
 # root
@@ -69,7 +42,8 @@ def index():
 # users new
 @app.route('/users/new')
 def new():
-    return render_template('users/new.html')
+    user_form = UserForm()
+    return render_template('users/new.html', form=user_form)
 
 # users edit
 @app.route('/users/<int:id>/edit')
@@ -130,7 +104,7 @@ def notes_show(user_id,id):
     return render_template('notes/show.html', note=found_note)
 
 
-###### old code
+###### old code #####
 # about
 @app.route('/about')
 def about():
