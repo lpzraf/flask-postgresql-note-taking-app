@@ -1,8 +1,8 @@
 from flask import (Flask, render_template, request, abort, 
                     redirect, url_for, jsonify,session,g, session)
 from flask_modus import Modus
-from user import User
-from model import db, save_db, user_db, save_user_db
+# from user import User
+# from model import db, save_db, user_db, save_user_db
 from flask_sqlalchemy import SQLAlchemy
 import datetime
 import random
