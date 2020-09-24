@@ -17,6 +17,7 @@
                     <button class="ui button"><a href="{{ url_for('notes_index', user_id=user.id) }}">Notes</a></button>
                     <button class="ui button"><a href="{{ url_for('edit', id=user.id) }}">Edit User</a></button>
                     <form class="ui button" action="{{url_for('show', id=user.id)}}?_method=DELETE" method="POST">
+                        {{delete_form.hidden_tag()}}
                         <input type="submit" value="X">
                     </form> 
                 {% endfor %} 

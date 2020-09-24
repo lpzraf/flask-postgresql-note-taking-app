@@ -4,24 +4,30 @@
 
 {% block content %}
     
-    <div class="ui two column centered grid">
-        <div class="column"><div class="ui segment">
-            <h2 class="ui left floated header"><i class="pencil alternate icon"></i>Add Note</h2>
-            <div class="ui clearing divider"></div>
-            <p>What are you thinking today?</p>
+<div class="ui two column centered grid">
+    <div class="column"><div class="ui segment">
+        <h2 class="ui left floated header"><i class="pencil alternate icon"></i>Add Note</h2>
+        <div class="ui clearing divider"></div>
+        <p>What are you thinking today?</p>
 
-            <form class="ui form" method="POST" action="{{ url_for('notes_index', user_id=user.id) }}">
+        <form class="ui form" method="POST" action="{{ url_for('notes_index', user_id=user.id) }}">
+            {{ form.hidden_tag() }}
+            {% for field in form if field.widget.input_type != 'hidden' %}
                 <div class="field">
-                    <label>Note Title</label>
-                    <input type="text" name="title" placeholder="Add a note title...">
+                    {{field.label}}
+                    {{field}}
+                    <span>
+                        {% if field.errors %}
+                            {% for error in field.errors %}
+                            {{ error }}
+                            {% endfor %}
+                        {% endif %}
+                    </span>
                 </div>
-                <div class="field">
-                    <label>Short Description: </label>
-                    <textarea rows="2" type="text" name="note_body" placeholder="Add a short description..."></textarea>
-                </div>
-                <button class="ui button" type="submit">Save</button>
-            </form>
-        </div>
+            {% endfor %}
+            <button class="ui button" type="submit">Save</button>
+        </form>
     </div>
+</div>
 
 {% endblock %}

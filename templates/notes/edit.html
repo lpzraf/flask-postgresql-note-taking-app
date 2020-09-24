@@ -11,14 +11,20 @@
             <p>What are you thinking today?</p>
 
             <form class="ui form" method="POST" action="{{ url_for('notes_show', user_id=note.user_id, id=note.id) }}?_method=PATCH">
-                <div class="field">
-                    <label>Note Title</label>
-                    <input type="text" name="title" value="{{ note.title }}">
-                </div>
-                <div class="field">
-                    <label>Short Description: </label>
-                    <textarea rows="2" type="text" name="note_body">{{ note.note_body }}</textarea>
-                </div>
+                {{ form.hidden_tag() }}
+                {% for field in form if field.widget.input_type != 'hidden' %}
+                    <div class="field">
+                        {{field.label}}
+                        {{field}}
+                        <span>
+                            {% if field.errors %}
+                                {% for error in field.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            {% endif %}
+                        </span>
+                    </div>
+                {% endfor %}
                 <button class="ui button" type="submit">Save</button>
             </form>
         </div>

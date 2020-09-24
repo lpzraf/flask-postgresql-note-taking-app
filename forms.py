@@ -8,3 +8,6 @@ class UserForm(FlaskForm):
 class NoteForm(FlaskForm):
     title = StringField('Title', [validators.DataRequired()])
     note_body = StringField('Note Body', [validators.DataRequired()])
+
+class DeleteForm(FlaskForm):
+    pass

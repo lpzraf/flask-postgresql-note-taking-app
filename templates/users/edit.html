@@ -11,14 +11,20 @@
             <p>Fillout the form to create an account.</p>
 
             <form class="ui form" method="POST" action="{{url_for('show', id=user.id)}}?_method=PATCH">
-                <div class="field">
-                    <label>Username</label>
-                    <input type="text" name="username" value="{{ user.username }}">
-                </div>
-                <div class="field">
-                    <label>Password</label>
-                    <input type="text" name="password" value="{{ user.password }}">
-                </div>
+                {{ form.hidden_tag() }}
+                {% for field in form if field.widget.input_type != 'hidden' %}
+                    <div class="field">
+                        {{field.label}}
+                        {{field}}
+                        <span>
+                            {% if field.errors %}
+                                {% for error in field.errors %}
+                                {{ error }}
+                                {% endfor %}
+                            {% endif %}
+                        </span>
+                    </div>
+                {% endfor %}
                 <button class="ui button" type="submit">Save</button>
             </form>
         </div>
