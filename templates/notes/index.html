@@ -11,7 +11,7 @@
             <h2>Hi {{user.username}}! These are your current notes.</h2>
             <p>{{ date }} - <span id="clock"></span></p>
                 {% for note in user.notes %} 
-                    <p><a href="{{ url_for('view_note', index=loop.index0) }}">{{note.title}}</a></p>
+                    <p><a href="{{url_for('notes_show', user_id=user.id, id=note.id)}}">{{note.title}}</a></p>
                     <button class="ui button"><a href="{{ url_for('notes_edit', user_id=user.id, id=note.id) }}">Edit Note</a></button>
                     <form class="ui button" action="{{url_for('notes_show', user_id=user.id, id=note.id)}}?_method=DELETE" method="POST">
                         {{delete_form.hidden_tag()}}

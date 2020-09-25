@@ -151,7 +151,7 @@ def notes_show(user_id,id):
             db.session.delete(found_note)
             db.session.commit()
         return redirect(url_for('notes_index', user_id=user_id))
-    return render_template('notes/show.html', note=found_note)
+    return render_template('notes/show.html', note=found_note,user=User.query.get(user_id))
 
 
 ###### old code #####
@@ -160,97 +160,6 @@ def notes_show(user_id,id):
 def about():
     return render_template('about.html')
 
-# notes homepage
-@app.route('/notes')
-def notes():
-    global date
-    if not g.user:
-        return redirect(url_for('login'))
-    
-    return render_template('notes.html', 
-                            date=date,
-                            notes=db)
-
-# adding a note
-@app.route('/notes/new', methods=["GET", "POST"])
-def add_note():
-    global date
-    if not g.user:
-        return redirect(url_for('login'))
-
-    if request.method == "POST":
-        note = {"title": request.form['title'],
-                "date": request.form['date'],  
-                "note_body": request.form['note_body']}
-        db.append(note)
-        save_db()
-        return redirect(url_for('view_note', index=len(db) - 1))
-    else:
-        return render_template("add_note.html", date=date)
-
-# viewing a note
-@app.route('/notes/<int:index>', methods=['GET', 'PATCH', 'DELETE'])
-def view_note(index):
-    if not g.user:
-        return redirect(url_for('login'))
-
-    try:
-        note = db[index]
-        # if updating a note
-        if request.method == b"PATCH":
-            note = {"title": request.form['title'],
-                "date": request.form['date'],  
-                "note_body": request.form['note_body']}
-            db[index] = note
-            save_db()
-            return redirect(url_for('notes'))
-        
-        # if deleting a note
-        if request.method == b"DELETE":
-            del note
-            save_db()
-            return redirect(url_for('notes'))
-        
-        # if showing a note
-        return render_template("note.html", 
-                                note=note,
-                                index=index,
-                                max_index= len(db)-1)
-    except IndexError:
-        abort(404)
-
-# edit a note
-@app.route('/notes/<int:index>/edit')
-def edit_note(index):
-    if not g.user:
-        return redirect(url_for('login'))
-
-    try:
-        global date
-        note = db[index]
-        return render_template("edit.html", 
-                                note=note,
-                                index=index,
-                                max_index= len(db)-1,
-                                date=date)
-    except IndexError:
-        abort(404)
-
-# removing a note 
-@app.route('/remove_note/<int:index>', methods=["GET", "POST"])
-def remove_note(index):
-    if not g.user:
-        return redirect(url_for('login'))
-
-    try:
-        if request.method == "POST":
-            del db[index]
-            save_db()
-            return redirect(url_for('notes'))
-        else:
-            return render_template('remove_note.html', note=db[index])
-    except IndexError:
-        abort(404)
 
 
 # session
