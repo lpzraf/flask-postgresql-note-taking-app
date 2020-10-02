@@ -32,4 +32,12 @@
 5. Visit http://127.0.0.1:5000/login
 
 ### Whats next? -----NEEDS UPDATE
-1. Build a similar app connecting data to PostgreSQL.
+Debugging example: to add user from the terminal load the Python shell and follow the setps below:
+1. >>> from app import db, User, Note, datetime
+2. >>> db.create_all()
+3. >>> raf = User(username='rafi',password='rafi')
+4. >>> note1 = Note(title='notes of Rafi', date=datetime.datetime.now(), note_body='note copy', user=rafi)
+5. >>> exit()
+
+
+

@@ -1,15 +1,19 @@
 from flask import (Flask, render_template, request, abort, 
-                    redirect, url_for, jsonify,session,g, session)
+                    redirect, url_for, jsonify,session,g)
 from flask_modus import Modus
 # from model import User, Note, db
-from forms import UserForm, NoteForm, DeleteForm
+from forms import UserForm, NoteForm, DeleteForm, LoginForm
 # from model import db, save_db, user_db, save_user_db
 from flask_sqlalchemy import SQLAlchemy
 import datetime
 import random
+from flask_bcrypt import Bcrypt
 from credentials import *
+from sqlalchemy.exc import IntegrityError
+from decorators import ensure_authenticated, prevent_login_signup, ensure_correct_user
 
 app = Flask(__name__)
+bcrypt = Bcrypt(app)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = DB_CREDENTIALS
 app.secret_key = SECRET_KEY
@@ -27,15 +31,24 @@ class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True)
-    password = db.Column(db.String(20), unique=True)
+    password = db.Column(db.String(120), unique=True)
     notes = db.relationship('Note', backref='user', lazy='dynamic', cascade="all,delete")
 
     def __init__(self,username,password):
         self.username = username
-        self.password = password
+        self.password = bcrypt.generate_password_hash(password).decode('UTF-8')
     
     def __repr__(self):
         return '<User %r>' % self.username
+    
+    @classmethod
+    def authenticate(cls,username,password):
+        found_user = cls.query.filter_by(username = username).first()
+        if found_user:
+            authenticated_user = bcrypt.check_password_hash(found_user.password, password)
+            if authenticated_user:
+                return found_user
+        return False
 
 class Note(db.Model):
     __tablename__ = 'notes'
@@ -52,35 +65,41 @@ class Note(db.Model):
         self.user_id = user_id
 
 
-
-# root
-@app.route('/')
-def root():
-    return redirect(url_for('index.html'))
-
-# users home
-@app.route('/users', methods=['GET', 'POST'])
+# home
+@app.route('/users')
+@ensure_authenticated
 def index():
     delete_form = DeleteForm()
-    if request.method == 'POST':
-        form = UserForm(request.form)
-        if form.validate():
-            new_user = User(request.form['username'], request.form['password'])
+    return render_template('users/index.html', users=User.query.all(), delete_form=delete_form)
+
+# user signup
+@app.route('/users', methods=['POST'])
+@prevent_login_signup
+def signup():
+    form = UserForm(request.form)
+    if form.validate():
+        try:
+            new_user = User(form.username.data, form.password.data)
             db.session.add(new_user)
             db.session.commit()
+            session['user_id'] = new_user.id
+            # flash('User Created!')
             return redirect(url_for('index'))
-        else:
+        except IntegrityError:
             return render_template('users/new.html', form=form)
-    return render_template('users/index.html', users=User.query.all(), delete_form=delete_form)
+        return render_template('users/new.html', form=form)
 
 # users new
 @app.route('/users/new')
+@prevent_login_signup
 def new():
     user_form = UserForm()
     return render_template('users/new.html', form=user_form)
 
 # users edit
 @app.route('/users/<int:id>/edit')
+@ensure_authenticated
+@ensure_correct_user
 def edit(id):
     found_user = User.query.get(id)
     user_form = UserForm(obj=found_user)
@@ -88,6 +107,8 @@ def edit(id):
 
 # users show
 @app.route('/users/<int:id>', methods=['GET', 'PATCH', 'DELETE'])
+@ensure_authenticated
+@ensure_correct_user
 def show(id):
     found_user = User.query.get(id)
     if request.method == b'PATCH':
@@ -111,6 +132,7 @@ def show(id):
 @app.route('/users/<int:user_id>/notes', methods=['GET', 'POST'])
 def notes_index(user_id):
     delete_form = DeleteForm()
+    found_user = User.query.get(user_id)
     if request.method == 'POST':
         form = NoteForm(request.form)
         if form.validate():
@@ -120,7 +142,7 @@ def notes_index(user_id):
             return redirect(url_for('notes_index', user_id=user_id))
         else:
             return render_template('notes/new.html', form=form) 
-    return render_template('notes/index.html', user=User.query.get(user_id), delete_form=delete_form)
+    return render_template('notes/index.html', user=found_user, delete_form=delete_form)
 
 # notes new
 @app.route('/users/<int:user_id>/notes/new', methods=['GET', 'POST'])
@@ -130,6 +152,7 @@ def notes_new(user_id):
 
 # notes edit
 @app.route('/users/<int:user_id>/notes/<int:id>/edit')
+@ensure_authenticated
 def notes_edit(user_id,id):
     found_note = Note.query.get(id)
     note_form = NoteForm(obj=found_note)
@@ -139,6 +162,7 @@ def notes_edit(user_id,id):
 @app.route('/users/<int:user_id>/notes/<int:id>',  methods=['GET', 'PATCH' ,'DELETE'])
 def notes_show(user_id,id):
     found_note = Note.query.get(id)
+    found_user = User.query.get(user_id)
     if request.method == b"PATCH":
         found_note.title = request.form["title"]
         found_note.note_body = request.form["note_body"]
@@ -151,7 +175,7 @@ def notes_show(user_id,id):
             db.session.delete(found_note)
             db.session.commit()
         return redirect(url_for('notes_index', user_id=user_id))
-    return render_template('notes/show.html', note=found_note,user=User.query.get(user_id))
+    return render_template('notes/show.html', note=found_note,user=found_user)
 
 
 ###### old code #####
@@ -161,86 +185,102 @@ def about():
     return render_template('about.html')
 
 
-
 # session
+# @app.before_request
+# def before_request():
+#     g.user = None
+
+#     if 'user_id' in session:
+#         global user_db
+#         user = [x for x in user_db if x['id'] == session['user_id']][0]
+#         g.user = user
+
 @app.before_request
 def before_request():
-    g.user = None
-
-    if 'user_id' in session:
-        global user_db
-        user = [x for x in user_db if x['id'] == session['user_id']][0]
-        g.user = user
+    if session.get('user_id'):
+        g.user = User.query.get(session['user_id'])
+    else:
+        g.user = None
 
 
 # login
+# @app.route('/login', methods=['GET', 'POST'])
+# def login():
+#     if request.method == 'POST':
+#         session.pop('user_id', None)
+
+#         username = request.form['username']
+#         password = request.form['password']
+
+#         user = [x for x in user_db if x['username'] == username][0]
+#         if user and user['password'] == password:
+#             session['user_id'] = user['id']
+#             return redirect(url_for('profile'))
+
+#         return redirect(url_for('login'))
+
+#     return render_template('login.html')
+
 @app.route('/login', methods=['GET', 'POST'])
+@prevent_login_signup
 def login():
+    form = LoginForm()
     if request.method == 'POST':
-        session.pop('user_id', None)
-
-        username = request.form['username']
-        password = request.form['password']
-
-        user = [x for x in user_db if x['username'] == username][0]
-        if user and user['password'] == password:
-            session['user_id'] = user['id']
-            return redirect(url_for('profile'))
-
-        return redirect(url_for('login'))
-
-    return render_template('login.html')
+        if form.validate():
+            authenticated_user = User.authenticate(form.username.data, form.password.data)
+            if authenticated_user:
+                session['user_id'] = authenticated_user.id
+                # flash('You are logged in.')
+                return redirect(url_for('profile'))
+            else:
+                # flash('Invalid credentials!')
+                return redirect(url_for('login'))
+    return render_template('login.html', form=form)
 
 
 # logout
-@app.route('/logout', methods=['GET', 'POST'])
+# @app.route('/logout', methods=['GET', 'POST'])
+# def logout():
+#     global date
+#     if request.method == 'POST':
+#         session.pop('user_id', None)
+#         return redirect(url_for('login'))
+#     else:
+#         return render_template('logout.html', date=date)
+
+@app.route('/logout')
+@ensure_authenticated
 def logout():
-    global date
-    if request.method == 'POST':
-        session.pop('user_id', None)
-        return redirect(url_for('login'))
-    else:
-        return render_template('logout.html', date=date)
+    session.pop('user_id')
+    return redirect(url_for('login'))
 
 
 # profile
 @app.route('/profile')
+@ensure_authenticated
 def profile():
-    if not g.user:
-        return redirect(url_for('login'))
+    # if not g.user:
+    #     return redirect(url_for('login'))
 
     return render_template('profile.html')
 
 
 # creating a user
-@app.route('/users/new', methods=["GET", "POST"])
-def add_user():
-    global date
-    if request.method == "POST":
-        user = {"id": random.randint(0,10000),
-                "username": request.form['username'],  
-                "password": request.form['password']}
-        session['user_id'] = user['id']
-        user_db.append(user)
-        save_user_db()
-        return redirect(url_for("profile"))
+# @app.route('/users/new', methods=["GET", "POST"])
+# def add_user():
+#     global date
+#     if request.method == "POST":
+#         user = {"id": random.randint(0,10000),
+#                 "username": request.form['username'],  
+#                 "password": request.form['password']}
+#         session['user_id'] = user['id']
+#         user_db.append(user)
+#         save_user_db()
+#         return redirect(url_for("profile"))
     
-    return render_template("add_user.html", date=date)
+#     return render_template("add_user.html", date=date)
 
 
-#protected
-@app.route('/protected')
-def protected():
-    if g.user:
-        return render_template('protected.html')
-    return redirect(url_for('login'))
-
-
-# drop session
-@app.route('/dropsession')
-def dropsession():
-    session.pop('user_id', None)
-    return 'Dropped!'
 
 if __name__ == '__main__':
     app.run(debug=True)
