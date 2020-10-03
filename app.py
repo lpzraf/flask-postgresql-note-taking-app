@@ -29,11 +29,13 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True)
     password = db.Column(db.String(120), unique=True)
+    date = db.Column(db.DateTime)
     notes = db.relationship('Note', backref='user', lazy='dynamic', cascade="all,delete")
 
-    def __init__(self,username,password):
+    def __init__(self,username,password,date):
         self.username = username
         self.password = bcrypt.generate_password_hash(password).decode('UTF-8')
+        self.date = date
     
     def __repr__(self):
         return '<User %r>' % self.username
@@ -50,9 +52,9 @@ class User(db.Model):
 class Note(db.Model):
     __tablename__ = 'notes'
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(80), nullable=False)
+    title = db.Column(db.String(20), nullable=False)
     date = db.Column(db.DateTime)
-    note_body = db.Column(db.String(280), nullable=False)
+    note_body = db.Column(db.String(100), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
     def __init__(self,title,date,note_body, user_id):
@@ -77,7 +79,7 @@ def signup():
     form = UserForm(request.form)
     if form.validate():
         try:
-            new_user = User(form.username.data, form.password.data)
+            new_user = User(form.username.data, form.password.data,datetime.datetime.now())
             db.session.add(new_user)
             db.session.commit()
             session['user_id'] = new_user.id
@@ -130,8 +132,9 @@ def show(id):
 
 # notes index
 @app.route('/users/<int:user_id>/notes', methods=['GET', 'POST'])
-@ensure_correct_user
+# @ensure_correct_user
 def notes_index(user_id):
+    global date
     delete_form = DeleteForm()
     found_user = User.query.get(user_id)
     if request.method == 'POST':
@@ -143,7 +146,7 @@ def notes_index(user_id):
             return redirect(url_for('notes_index', user_id=user_id))
         else:
             return render_template('notes/new.html', form=form) 
-    return render_template('notes/index.html', user=found_user, delete_form=delete_form)
+    return render_template('notes/index.html', user=found_user, delete_form=delete_form, date=date)
 
 # notes new
 @app.route('/users/<int:user_id>/notes/new', methods=['GET', 'POST'])

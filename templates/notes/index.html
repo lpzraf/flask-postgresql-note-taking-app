@@ -4,22 +4,49 @@
 
 {% block content %}
 
-    <div class="ui two column centered grid">
-        <div class="column"><div class="ui segment">
-            <h2 class="ui left floated header"><i class="pencil alternate icon"></i>Note-Taking App</h2>
-            <div class="ui clearing divider"></div>
-            <h2>Hi {{user.username}}! These are your current notes.</h2>
-            <p>{{ date }} - <span id="clock"></span></p>
-                {% for note in user.notes %} 
-                    <p><a href="{{url_for('notes_show', user_id=user.id, id=note.id)}}">{{note.title}}</a></p>
-                    <button class="ui button"><a href="{{ url_for('notes_edit', user_id=user.id, id=note.id) }}">Edit Note</a></button>
-                    <form class="ui button" action="{{url_for('notes_show', user_id=user.id, id=note.id)}}?_method=DELETE" method="POST">
-                        {{delete_form.hidden_tag()}}
-                        <input type="submit" value="X">
-                    </form> 
-                {% endfor %}  
-            <button class="ui button"><a href="{{ url_for('notes_new', user_id=user.id) }}">Add Note</a></button>
+<div class="ui center aligned icon header">
+    <i class="pencil alternate icon"></i>
+    <h1>Hi {{user.username}}! These are your current notes.</h1>
+
+<p>{{ date }} - <span id="clock"></span></p>
+<a href="{{ url_for('notes_new', user_id=user.id) }}">Add Note</a>
+</div>
+  
+<div class="ui divider"></div>
+
+<div class="ui four column grid centered">
+
+    {% for note in user.notes %} 
+
+        <div class="column">
+            <div class="ui centered cards">
+                <div class="card">
+                    <div class="content">
+                        <img class="right floated mini ui image" src="/static/matthew.png">
+                        <div class="header">
+                            <a href="{{url_for('notes_show', user_id=user.id, id=note.id)}}">{{note.title}}</a>
+                        </div>
+                        <div class="meta">
+                            {{note.date.strftime('%Y-%m-%d') }}
+                        </div>
+                        <div class="description">
+                            {{note.note_body}}
+                        </div>
+                    </div>
+                    <div class="extra content">
+                        <div class="ui two buttons">
+                            <div class="ui basic blue button"><a href="{{ url_for('notes_edit', user_id=user.id, id=note.id) }}">Edit</a></div>
+                            <div class="ui basic red button"><form action="{{url_for('notes_show', user_id=user.id, id=note.id)}}?_method=DELETE" method="POST">
+                                {{delete_form.hidden_tag()}}
+                                <input type="submit" value="Delete">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+    {% endfor %} 
+</div>
 
 {% endblock %}

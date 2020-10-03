@@ -10,13 +10,14 @@
     <body>
         <nav>
             <ul>
-                <li><a href="{{url_for('login')}}" class="logo">Home</a></li>
+                <li><a href="{{url_for('login')}}" class="logo"><i class="pencil alternate icon"></i>Note-Taking App</a></li>
                 {% if g.user.username %}
-                    <li><a href="{{ url_for('logout')}}">Sign Out</a></li>
+                    <li><a href="{{ url_for('logout')}}">Sign out</a></li>
                 {% else %}
                     <li><a href="{{ url_for('login')}}">Login</a></li>
                 {% endif %}
                 <li><a href="{{ url_for('profile')}}">Profile</a></li>
+                <li><a href="{{ url_for('index')}}">Friends</a></li>
                 <li><a href="{{ url_for('about')}}">About</a></li>
             </ul>
         </nav>

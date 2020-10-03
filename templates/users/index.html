@@ -6,7 +6,7 @@
 
 <div class="ui center aligned icon header">
     <i class="users icon"></i>
-    <h1>Hi {{ g.user.username }}! These are your Friends</h1>
+    <h1>Hi {{ g.user.username }}! These are your Friends.</h1>
 
 <p>{{ date }} - <span id="clock"></span></p>
 </div>
@@ -26,10 +26,10 @@
                             <a href="{{url_for('show', id=user.id)}}">{{user.username}}</a>
                         </div>
                         <div class="meta">
-                        Friends of Veronika
+                        Member since {{user.date.strftime('%Y-%m-%d')}}
                         </div>
                         <div class="description">
-                        Elliot requested permission to view your contact details
+                        Elliot requested permission to view your contact details.
                         </div>
                     </div>
                     <div class="extra content">
