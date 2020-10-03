@@ -66,8 +66,9 @@ class Note(db.Model):
 @app.route('/users')
 @ensure_authenticated
 def index():
+    global date
     delete_form = DeleteForm()
-    return render_template('users/index.html', users=User.query.all(), delete_form=delete_form)
+    return render_template('users/index.html', users=User.query.all(), delete_form=delete_form, date=date)
 
 # user signup
 @app.route('/users', methods=['POST'])

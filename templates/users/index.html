@@ -4,24 +4,49 @@
 
 {% block content %}
 
-    <div class="ui two column centered grid">
-        <div class="column"><div class="ui segment">
-            <h2 class="ui left floated header"><i class="pencil alternate icon"></i>Note-Taking App</h2>
-            <div class="ui clearing divider"></div>
-            <h2>Welcome back {{ g.user.username }}!</h2>
-            <h3>Current Users</h3>
-            <p>{{ date }} - <span id="clock"></span></p>
-                {% for user in users %} 
-                <p><a href="{{url_for('show', id=user.id)}}">{{user.username}}</a></p>
-                    <br>
-                    <button class="ui button"><a href="{{ url_for('notes_index', user_id=user.id) }}">Notes</a></button>
-                    <button class="ui button"><a href="{{ url_for('edit', id=user.id) }}">Edit User</a></button>
-                    <form class="ui button" action="{{url_for('show', id=user.id)}}?_method=DELETE" method="POST">
-                        {{delete_form.hidden_tag()}}
-                        <input type="submit" value="X">
-                    </form> 
-                {% endfor %} 
+<div class="ui center aligned icon header">
+    <i class="users icon"></i>
+    <h1>Hi {{ g.user.username }}! These are your Friends</h1>
+
+<p>{{ date }} - <span id="clock"></span></p>
+</div>
+  
+<div class="ui divider"></div>
+
+<div class="ui four column grid centered">
+
+    {% for user in users %} 
+
+        <div class="column">
+            <div class="ui centered cards">
+                <div class="card">
+                    <div class="content">
+                        <img class="right floated mini ui image" src="/static/matthew.png">
+                        <div class="header">
+                            <a href="{{url_for('show', id=user.id)}}">{{user.username}}</a>
+                        </div>
+                        <div class="meta">
+                        Friends of Veronika
+                        </div>
+                        <div class="description">
+                        Elliot requested permission to view your contact details
+                        </div>
+                    </div>
+                    <div class="extra content">
+                        <div class="ui tree buttons">
+                            <div class="ui basic green button"><a href="{{ url_for('notes_index', user_id=user.id) }}">Notes</a></div>
+                            <div class="ui basic blue button"><a href="{{ url_for('edit', id=user.id) }}">Edit</a></div>
+                            <div class="ui basic red button"><form action="{{url_for('show', id=user.id)}}?_method=DELETE" method="POST">
+                                {{delete_form.hidden_tag()}}
+                                <input type="submit" value="Delete">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+    {% endfor %} 
+</div>
 
 {% endblock %}
