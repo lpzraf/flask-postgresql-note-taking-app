@@ -10,7 +10,7 @@
     <body>
         <nav>
             <ul>
-                <li><a href="#" class="logo">Home</a></li>
+                <li><a href="{{url_for('login')}}" class="logo">Home</a></li>
                 {% if g.user.username %}
                     <li><a href="{{ url_for('logout')}}">Sign Out</a></li>
                 {% else %}
@@ -21,6 +21,14 @@
             </ul>
         </nav>
         <br>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                <p>{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
         {% block content %}
         {% endblock %}
     <script type=text/javascript src="{{url_for('static', filename='scripts.js') }}"></script>

@@ -8,7 +8,7 @@
         <div class="column"><div class="ui segment">
             <h2 class="ui left floated header"><i class="pencil alternate icon"></i>Login</h2>
             <div class="ui clearing divider"></div>
-            <p>Login!</p>
+            <p>New to the app? <a href="{{ url_for('new') }}">Create an account</a></p>
 
             <form class="ui form" method="POST" action="{{url_for('login')}}">
                 {{ form.hidden_tag() }}
