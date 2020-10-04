@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Note-Taking App - {% block title %}{% endblock %}</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
     <body>
@@ -24,11 +26,19 @@
         <br>
         {% with messages = get_flashed_messages() %}
             {% if messages %}
-                {% for message in messages %}
-                <p>{{ message }}</p>
+                {% for msg in messages %}
+
+                <div class="ui negative message compact">
+                    <i class="close icon"></i>
+                    <div class="header centered">
+                        {{ msg }}
+                    </div>
+                </div>
+    
                 {% endfor %}
             {% endif %}
         {% endwith %}
+
 
         {% block content %}
         {% endblock %}

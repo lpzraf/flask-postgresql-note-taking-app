@@ -13,7 +13,12 @@
                     <span class="date">Joined in 2013</span>
             </div>
             <div class="description">
-            <a href="{{ url_for('notes_index', user_id=g.user.id) }}">Click to see your notes.</a>
+                {% if g.user.notes.count() - 2 %}
+                    <p>You have {{ g.user.notes.count() }} note.</p>
+                {% else %}
+                    <p>You have {{ g.user.notes.count() }} notes.</p>
+                {% endif%}
+            <a href="{{ url_for('notes_index', user_id=g.user.id) }}">Click to check them out!</a>
             </div>
             </div>
             <div class="extra content">
@@ -23,4 +28,6 @@
             </a>
             </div>
         </div>
+            <p>{{ g.user.notes.count() }}</p>
+ 
 {% endblock %}
