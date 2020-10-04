@@ -133,7 +133,6 @@ def show(id):
 # notes index
 @app.route('/users/<int:user_id>/notes', methods=['GET', 'POST'])
 @ensure_authenticated
-# @ensure_correct_user
 def notes_index(user_id):
     global date
     delete_form = DeleteForm()
@@ -151,6 +150,8 @@ def notes_index(user_id):
 
 # notes new
 @app.route('/users/<int:user_id>/notes/new', methods=['GET', 'POST'])
+@ensure_authenticated
+@ensure_correct_user
 def notes_new(user_id):
     note_form = NoteForm()
     return render_template('notes/new.html', user=User.query.get(user_id), form=note_form)
