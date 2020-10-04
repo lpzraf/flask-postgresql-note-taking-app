@@ -13,7 +13,7 @@
                     <span class="date">Member since {{ g.user.date.strftime('%Y-%m-%d') }}</span>
             </div>
             <div class="description">
-                {% if g.user.notes.count() - 2 %}
+                {% if g.user.notes.count() == 1 %}
                     <p>You have {{ g.user.notes.count() }} note.</p>
                 {% else %}
                     <p>You have {{ g.user.notes.count() }} notes.</p>
@@ -28,6 +28,5 @@
             </a>
             </div>
         </div>
-            <p>{{ g.user.notes.count() }}</p>
  
 {% endblock %}

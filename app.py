@@ -83,7 +83,7 @@ def signup():
             db.session.add(new_user)
             db.session.commit()
             session['user_id'] = new_user.id
-            flash('User Created!')
+            flash('User Created!', 'positive')
             return redirect(url_for('index'))
         except IntegrityError:
             return render_template('users/new.html', form=form)
@@ -118,7 +118,7 @@ def show(id):
             found_user.password = request.form['password']
             db.session.add(found_user)
             db.session.commit()
-            flash('User Updated!')
+            flash('User Updated!', 'positive')
             return redirect(url_for('index'))
         return render_template('users/edit.html', user=found_user, form=form)
     if request.method == b'DELETE':
@@ -126,7 +126,7 @@ def show(id):
         if delete_form.validate():
             db.session.delete(found_user)
             db.session.commit()
-            flash('User Deleted!')
+            flash('User Deleted!', 'positive')
         return redirect(url_for('index'))
     return render_template('users/show.html', user=found_user)
 
@@ -206,10 +206,10 @@ def login():
             authenticated_user = User.authenticate(form.username.data, form.password.data)
             if authenticated_user:
                 session['user_id'] = authenticated_user.id
-                flash('You are logged in.')
+                flash('You are logged in.', 'positive')
                 return redirect(url_for('profile'))
             else:
-                flash('Invalid credentials!')
+                flash('Invalid credentials!', 'negative')
                 return redirect(url_for('login'))
     return render_template('login.html', form=form)
 

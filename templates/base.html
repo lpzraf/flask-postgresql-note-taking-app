@@ -24,11 +24,11 @@
             </ul>
         </nav>
         <br>
-        {% with messages = get_flashed_messages() %}
+        {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-                {% for msg in messages %}
+                {% for category, msg in messages %}
 
-                <div class="ui negative message compact">
+                <div class="ui {{ category }} message compact">
                     <i class="close icon"></i>
                     <div class="header centered">
                         {{ msg }}
