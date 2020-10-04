@@ -114,8 +114,8 @@ def show(id):
     if request.method == b'PATCH':
         form = UserForm(request.form)
         if form.validate():
-            found_user.username = request.form['username']
-            found_user.password = request.form['password']
+            found_user.username = form.username.data
+            found_user.password = bcrypt.generate_password_hash(form.password.data).decode('UTF-8')
             db.session.add(found_user)
             db.session.commit()
             flash('User Updated!', 'positive')
