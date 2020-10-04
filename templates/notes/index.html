@@ -6,7 +6,11 @@
 
 <div class="ui center aligned icon header">
     <i class="pencil alternate icon"></i>
-    <h1>Hi {{user.username}}! These are your current notes.</h1>
+    {% if g.user.id == user.id %}
+        <h1>Hi {{g.user.username}}! These are your current notes.</h1>
+    {% else %}
+        <h1>Hi {{g.user.username}}! These are {{user.username}}'s notes.</h1>
+    {% endif %}
 
 <p>{{ date }} - <span id="clock"></span></p>
 <a href="{{ url_for('notes_new', user_id=user.id) }}">Add Note</a>

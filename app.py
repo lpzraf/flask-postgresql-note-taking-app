@@ -132,6 +132,7 @@ def show(id):
 
 # notes index
 @app.route('/users/<int:user_id>/notes', methods=['GET', 'POST'])
+@ensure_authenticated
 # @ensure_correct_user
 def notes_index(user_id):
     global date
@@ -157,6 +158,7 @@ def notes_new(user_id):
 # notes edit
 @app.route('/users/<int:user_id>/notes/<int:id>/edit')
 @ensure_authenticated
+@ensure_correct_user
 def notes_edit(user_id,id):
     found_note = Note.query.get(id)
     note_form = NoteForm(obj=found_note)
@@ -164,6 +166,8 @@ def notes_edit(user_id,id):
 
 # notes show
 @app.route('/users/<int:user_id>/notes/<int:id>',  methods=['GET', 'PATCH' ,'DELETE'])
+@ensure_authenticated
+@ensure_correct_user
 def notes_show(user_id,id):
     found_note = Note.query.get(id)
     found_user = User.query.get(user_id)
