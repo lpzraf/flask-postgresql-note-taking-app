@@ -10,7 +10,7 @@
             <div class="content">
                 <a class="header" href="{{ url_for('notes_index', user_id=g.user.id) }}">Hi {{g.user.username}}!</a>
                     <div class="meta">
-                    <span class="date">Joined in 2013</span>
+                    <span class="date">Member since {{ g.user.date.strftime('%Y-%m-%d') }}</span>
             </div>
             <div class="description">
                 {% if g.user.notes.count() - 2 %}
