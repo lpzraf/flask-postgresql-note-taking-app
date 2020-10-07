@@ -4,6 +4,7 @@ users_data_db.json
 # db credentials
 credentials.py
 
+# other
 __pycache__/
 
 .vscode/
