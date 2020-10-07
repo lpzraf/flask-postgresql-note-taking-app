@@ -62,7 +62,7 @@ class Note(db.Model):
         self.user_id = user_id
 
 
-# home
+# users
 @app.route('/users')
 @ensure_authenticated
 def index():
