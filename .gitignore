@@ -4,8 +4,8 @@ users_data_db.json
 # db credentials
 credentials.py
 
-__pycache__
+__pycache__/
 
-.vscode
+.vscode/
 
-venv
+venv/
