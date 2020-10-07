@@ -8,7 +8,7 @@
     <div class="column"><div class="ui segment">
         <h2 class="ui left floated header"><i class="pencil alternate icon"></i>Add Note</h2>
         <div class="ui clearing divider"></div>
-        <p>What are you thinking today?</p>
+        <p>What are you thinking today?{{user.id}}||||{{g.user.id}}||{{session['user_id']}}</p>
 
         <form class="ui form" method="POST" action="{{ url_for('notes_index', user_id=user.id) }}">
             {{ form.hidden_tag() }}

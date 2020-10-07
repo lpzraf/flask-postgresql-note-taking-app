@@ -97,20 +97,20 @@ def new():
     return render_template('users/new.html', form=user_form)
 
 # users edit
-@app.route('/users/<int:id>/edit')
+@app.route('/users/<int:user_id>/edit')
 @ensure_authenticated
 @ensure_correct_user
-def edit(id):
-    found_user = User.query.get(id)
+def edit(user_id):
+    found_user = User.query.get(user_id)
     user_form = UserForm(obj=found_user)
     return render_template('users/edit.html', user=found_user, form=user_form)
 
 # users show
-@app.route('/users/<int:id>', methods=['GET', 'PATCH', 'DELETE'])
+@app.route('/users/<int:user_id>', methods=['GET', 'PATCH', 'DELETE'])
 @ensure_authenticated
 @ensure_correct_user
-def show(id):
-    found_user = User.query.get(id)
+def show(user_id):
+    found_user = User.query.get(user_id)
     if request.method == b'PATCH':
         form = UserForm(request.form)
         if form.validate():

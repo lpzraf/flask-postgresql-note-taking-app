@@ -23,7 +23,8 @@ def prevent_login_signup(fn):
 def ensure_correct_user(fn):
     @wraps(fn)
     def wrapper(*args, **kwargs):
-        correct_id = kwargs.get('id')
+        # import pdb; pdb.set_trace()
+        correct_id = kwargs.get('user_id')
         if correct_id != session.get('user_id'):
             flash('Not authorized!', 'negative')
             return redirect(url_for('index'))

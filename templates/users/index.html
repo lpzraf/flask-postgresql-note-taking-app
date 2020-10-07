@@ -23,7 +23,7 @@
                     <div class="content">
                         <img class="right floated mini ui image" src="/static/matthew.png">
                         <div class="header">
-                            <a href="{{url_for('show', id=user.id)}}">{{user.username}}</a>
+                            <a href="{{url_for('show', user_id=user.id)}}">{{user.username}}</a>
                         </div>
                         <div class="meta">
                         Member since {{user.date.strftime('%Y-%m-%d')}}
@@ -35,8 +35,8 @@
                     <div class="extra content">
                         <div class="ui tree buttons">
                             <div class="ui basic green button"><a href="{{ url_for('notes_index', user_id=user.id) }}">Notes</a></div>
-                            <div class="ui basic blue button"><a href="{{ url_for('edit', id=user.id) }}">Edit</a></div>
-                            <div class="ui basic red button"><form action="{{url_for('show', id=user.id)}}?_method=DELETE" method="POST">
+                            <div class="ui basic blue button"><a href="{{ url_for('edit', user_id=user.id) }}">Edit</a></div>
+                            <div class="ui basic red button"><form action="{{url_for('show', user_id=user.id)}}?_method=DELETE" method="POST">
                                 {{delete_form.hidden_tag()}}
                                 <input type="submit" value="Delete">
                                 </form>
