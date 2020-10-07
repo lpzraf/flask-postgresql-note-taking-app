@@ -22,8 +22,6 @@ with app.app_context():
 
 modus = Modus(app) # for overwriting http methods
 
-date = datetime.datetime.now().strftime('%A, %b %d, %Y')
-
 class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
@@ -68,7 +66,7 @@ class Note(db.Model):
 @app.route('/users')
 @ensure_authenticated
 def index():
-    global date
+    date = datetime.datetime.now().strftime('%A, %b %d, %Y')
     delete_form = DeleteForm()
     return render_template('users/index.html', users=User.query.all(), delete_form=delete_form, date=date)
 
@@ -134,7 +132,7 @@ def show(user_id):
 @app.route('/users/<int:user_id>/notes', methods=['GET', 'POST'])
 @ensure_authenticated
 def notes_index(user_id):
-    global date
+    date = datetime.datetime.now().strftime('%A, %b %d, %Y')
     delete_form = DeleteForm()
     found_user = User.query.get(user_id)
     if request.method == 'POST':
