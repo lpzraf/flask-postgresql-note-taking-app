@@ -6,8 +6,8 @@
 3. RESTful practices
 4. Routing with Flask
 5. Persisting session data
-6. Form submits with Flask
-7. User login and logout
+6. Form submits in Flask
+7. User login and authentication
 8. Creating tables and loading data to PostgreSQL
 
 ### Tech
