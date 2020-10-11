@@ -1,14 +1,16 @@
 ## Note-Taking App built with Python Flask and PostgreSQL
 
 ### Built this app to practice:
-1. Refactoring an older app from saving data locally in json to PostgreSQL
-2. CRUD
-3. RESTful practices
-4. Routing with Flask
-5. Persisting session data
-6. Form submits in Flask
-7. User login and authentication
-8. Creating tables and loading data to PostgreSQL
+1. Refactoring an older app from saving data locally in json to now connecting and using PostgreSQL
+2. Data modeling with Flask SQLAlchemy
+3. Creating tables and loading data to PostgreSQL
+4. CRUD and RESTful practices
+5. Routing with Flask
+6. Persisting session data
+7. Form submits in Flask
+8. User login and authentication
+9. Flask's application factory
+10. Creating Blueprints to manage more complex apps
 
 ### Tech
 1. Python Flask
@@ -24,20 +26,10 @@
 4. Buttons
 5. Nav
 
-### Run it! -----NEEDS UPDATE
+### Run it!
 1. Fork and git clone the repo
-2. Cd to the main directory
-3. Get into the venv running source venv/bin/activate
-4. Run `FLASK_APP=app.py FLASK_ENV=development flask run`
-5. Visit http://127.0.0.1:5000/login
-
-### Whats next? -----NEEDS UPDATE
-Debugging example: to add user from the terminal load the Python shell and follow the setps below:
-1. >>> from app import db, User, Note, datetime
-2. >>> db.create_all()
-3. >>> raf = User(username='rafi',password='rafi')
-4. >>> note1 = Note(title='notes of Rafi', date=datetime.datetime.now(), note_body='note copy', user=rafi)
-5. >>> exit()
-
-
-
+2. Cd to `flask-postgresql-note-taking-app`
+3. Create virtual env running `python3 -m venv <name_of_virtualenv>`
+4. Activate venv running `source venv/bin/activate`
+5. Add dependencies running `pip3 install -r requierements.txt`
+6. Run `python app.py` and visit `http://0.0.0.0:80/login`
