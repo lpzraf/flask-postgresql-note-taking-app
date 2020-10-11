@@ -1,12 +1,11 @@
 
 from flask import (render_template, request,
-                   redirect, url_for, session, g, flash, Blueprint)
+                   redirect, url_for, Blueprint)
 from application.notes.forms import NoteForm, DeleteForm
 from application.models import User, Note
-from application import db, bcrypt
+from application import db
 import datetime
-from sqlalchemy.exc import IntegrityError
-from decorators import ensure_authenticated, prevent_login_signup, ensure_correct_user
+from decorators import ensure_authenticated, ensure_correct_user
 
 notes_bp = Blueprint(
     'notes',
@@ -25,13 +24,15 @@ def index(user_id):
     if request.method == 'POST':
         form = NoteForm(request.form)
         if form.validate():
-            new_notes = Note(request.form['title'], datetime.datetime.now(), request.form['note_body'],user_id)
+            new_notes = Note(request.form['title'], datetime.datetime.now(),
+                             request.form['note_body'], user_id)
             db.session.add(new_notes)
             db.session.commit()
             return redirect(url_for('notes.index', user_id=user_id))
         else:
             return render_template('notes/new.html', form=form)
-    return render_template('notes/index.html', user=found_user, delete_form=delete_form, date=date)
+    return render_template('notes/index.html', user=found_user,
+                           delete_form=delete_form, date=date)
 
 
 # notes new
@@ -39,8 +40,9 @@ def index(user_id):
 @ensure_authenticated
 @ensure_correct_user
 def new(user_id):
+    found_user = User.query.get(user_id)
     note_form = NoteForm()
-    return render_template('notes/new.html', user=User.query.get(user_id), form=note_form)
+    return render_template('notes/new.html', user=found_user, form=note_form)
 
 
 # notes edit

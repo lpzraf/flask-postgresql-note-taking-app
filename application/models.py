@@ -11,7 +11,11 @@ class User(db.Model):
     username = db.Column(db.String(20), unique=True)
     password = db.Column(db.String(120), unique=True)
     date = db.Column(db.DateTime)
-    notes = db.relationship('Note', backref='user', lazy='dynamic', cascade="all, delete")
+    notes = db.relationship(
+        'Note',
+        backref='user',
+        lazy='dynamic',
+        cascade="all, delete")
 
     def __init__(self, username, password, date):
         self.username = username
@@ -25,7 +29,9 @@ class User(db.Model):
     def authenticate(cls, username, password):
         found_user = cls.query.filter_by(username=username).first()
         if found_user:
-            authenticated_user = bcrypt.check_password_hash(found_user.password, password)
+            authenticated_user = bcrypt.check_password_hash(
+                found_user.password,
+                password)
             if authenticated_user:
                 return found_user
         return False
@@ -43,4 +49,4 @@ class Note(db.Model):
         self.title = title
         self.date = date
         self.note_body = note_body
-        self.user_id = user_id       
+        self.user_id = user_id

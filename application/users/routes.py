@@ -1,11 +1,14 @@
 from flask import (render_template, request,
-                   redirect, url_for, session, g, flash, Blueprint)
+                   redirect, url_for, session,
+                   flash, Blueprint)
 from application.users.forms import UserForm, DeleteForm
 from application.models import User
 from application import db, bcrypt
 import datetime
 from sqlalchemy.exc import IntegrityError
-from decorators import ensure_authenticated, prevent_login_signup, ensure_correct_user
+from decorators import (ensure_authenticated,
+                        prevent_login_signup,
+                        ensure_correct_user)
 
 users_bp = Blueprint(
     'users',
@@ -20,7 +23,10 @@ users_bp = Blueprint(
 def index():
     date = datetime.datetime.now().strftime('%A, %b %d, %Y')
     delete_form = DeleteForm()
-    return render_template('notes/index.html', users=User.query.all(), delete_form=delete_form, date=date)
+    return render_template('users/index.html',
+                           users=User.query.all(),
+                           delete_form=delete_form,
+                           date=date)
 
 
 # user signup
@@ -30,7 +36,9 @@ def signup():
     form = UserForm(request.form)
     if form.validate():
         try:
-            new_user = User(form.username.data, form.password.data, datetime.datetime.now())
+            new_user = User(form.username.data,
+                            form.password.data,
+                            datetime.datetime.now())
             db.session.add(new_user)
             db.session.commit()
             session['user_id'] = new_user.id

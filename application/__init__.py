@@ -2,13 +2,9 @@ from flask import (Flask, render_template, request,
                    redirect, url_for, session, g, flash)
 from flask_modus import Modus
 from application.users.forms import LoginForm
-from flask_sqlalchemy import SQLAlchemy
-import datetime
 from flask_bcrypt import Bcrypt
-from sqlalchemy.exc import IntegrityError
-from decorators import ensure_authenticated, prevent_login_signup, ensure_correct_user
-
-from application.models import db, User, Note
+from decorators import ensure_authenticated, prevent_login_signup
+from application.models import db, User
 
 app = Flask(__name__)
 
@@ -57,7 +53,9 @@ def login():
     form = LoginForm()
     if request.method == 'POST':
         if form.validate():
-            authenticated_user = User.authenticate(form.username.data, form.password.data)
+            authenticated_user = User.authenticate(
+                form.username.data,
+                form.password.data)
             if authenticated_user:
                 session['user_id'] = authenticated_user.id
                 flash('You are logged in.', 'positive')

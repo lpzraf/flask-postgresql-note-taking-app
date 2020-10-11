@@ -26,15 +26,3 @@ class DevConfig(Config):
     DEBUG = True
     TESTING = True
     DATABASE_URI = environ.get('DEV_DATABASE_URI')
-
-# from os import environ, path
-# from dotenv import load_dotenv
-# from credentials import DB_CREDENTIALS, SECRET_KEY
-
-
-# basedir = path.abspath(path.dirname(__file__))
-# load_dotenv(path.join(basedir, '.env'))
-
-# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# app.config['SQLALCHEMY_DATABASE_URI'] = DB_CREDENTIALS
-# app.secret_key = SECRET_KEY
