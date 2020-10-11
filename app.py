@@ -10,10 +10,18 @@ from sqlalchemy.exc import IntegrityError
 from decorators import ensure_authenticated, prevent_login_signup, ensure_correct_user
 
 app = Flask(__name__)
+
+# Using a production configuration
+# app.config.from_object('config.ProdConfig')
+
+# Using a development configuration
+app.config.from_object('config.DevConfig')
+
+
 bcrypt = Bcrypt(app)
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = DB_CREDENTIALS
-app.secret_key = SECRET_KEY
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# app.config['SQLALCHEMY_DATABASE_URI'] = DB_CREDENTIALS
+# app.secret_key = SECRET_KEY
 db = SQLAlchemy(app)  # comment this if using model.py
 db.init_app(app)
 with app.app_context():
@@ -243,4 +251,4 @@ def profile():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=80, debug=True)
