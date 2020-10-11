@@ -13,7 +13,7 @@
     {% endif %}
 
 <p>{{ date }} - <span id="clock"></span></p>
-<a href="{{ url_for('notes_new', user_id=user.id) }}">Add Note</a>
+<a href="{{ url_for('notes.new', user_id=user.id) }}">Add Note</a>
 </div>
   
 <div class="ui divider"></div>
@@ -28,7 +28,7 @@
                     <div class="content">
                         <img class="right floated mini ui image" src="/static/matthew.png">
                         <div class="header">
-                            <a href="{{url_for('notes_show', user_id=user.id, id=note.id)}}">{{note.title}}</a>
+                            <a href="{{url_for('notes.show', user_id=user.id, id=note.id)}}">{{note.title}}</a>
                         </div>
                         <div class="meta">
                             {{note.date.strftime('%Y-%m-%d') }}
@@ -39,8 +39,8 @@
                     </div>
                     <div class="extra content">
                         <div class="ui two buttons">
-                            <div class="ui basic blue button"><a href="{{ url_for('notes_edit', user_id=user.id, id=note.id) }}">Edit</a></div>
-                            <div class="ui basic red button"><form action="{{url_for('notes_show', user_id=user.id, id=note.id)}}?_method=DELETE" method="POST">
+                            <div class="ui basic blue button"><a href="{{ url_for('notes.edit', user_id=user.id, id=note.id) }}">Edit</a></div>
+                            <div class="ui basic red button"><form action="{{url_for('notes.show', user_id=user.id, id=note.id)}}?_method=DELETE" method="POST">
                                 {{delete_form.hidden_tag()}}
                                 <input type="submit" value="Delete">
                                 </form>

@@ -10,7 +10,7 @@
             <div class="ui clearing divider"></div>
             <p>Already a member? <a href="{{ url_for('login') }}">Login!</a></p>
 
-            <form class="ui form" method="POST" action="{{url_for('index')}}">
+            <form class="ui form" method="POST" action="{{url_for('users.index')}}">
                 {{ form.hidden_tag() }}
                 {% for field in form if field.widget.input_type != 'hidden' %}
                     <div class="field">

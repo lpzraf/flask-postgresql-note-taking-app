@@ -1,16 +1,16 @@
 {% extends "base.html" %}
 
-{% block title %}Add a user{% endblock %}
+{% block title %}Login{% endblock %}
 
 {% block content %}
     
     <div class="ui two column centered grid">
         <div class="column"><div class="ui segment">
-            <h2 class="ui left floated header"><i class="pencil alternate icon"></i>Edit User</h2>
+            <h2 class="ui left floated header"><i class="pencil alternate icon"></i>Login</h2>
             <div class="ui clearing divider"></div>
-            <p>Fillout the form to create an account.</p>
+            <p>New to the app? <a href="{{ url_for('users.new') }}">Create an account</a></p>
 
-            <form class="ui form" method="POST" action="{{url_for('show', user_id=user.id)}}?_method=PATCH">
+            <form class="ui form" method="POST" action="{{url_for('login')}}">
                 {{ form.hidden_tag() }}
                 {% for field in form if field.widget.input_type != 'hidden' %}
                     <div class="field">
@@ -25,7 +25,7 @@
                         </span>
                     </div>
                 {% endfor %}
-                <button class="ui button" type="submit">Save</button>
+                <button class="ui button" type="submit">Login</button>
             </form>
         </div>
     </div>

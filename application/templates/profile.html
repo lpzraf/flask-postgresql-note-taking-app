@@ -4,24 +4,24 @@
 
 {% block content %}
         <div class="ui centered link card">
-            <a class="image" href="{{ url_for('notes_index', user_id=g.user.id) }}">
+            <a class="image" href="{{ url_for('notes.index', user_id=g.user.id) }}">
                 <img src="/static/matthew.png">
             </a>
             <div class="content">
-                <a class="header" href="{{ url_for('notes_index', user_id=g.user.id) }}">Hi {{g.user.username}}!</a>
+                <a class="header" href="{{ url_for('notes.index', user_id=g.user.id) }}">Hi {{g.user.username}}!</a>
                     <div class="meta">
                     <span class="date">You are a member since {{ g.user.date.strftime('%Y-%m-%d') }}</span>
             </div>
             <div class="description">
                 {% if g.user.notes.count() == 1 %}
                     <p>You have {{ g.user.notes.count() }} note.</p>
-                    <a href="{{ url_for('notes_index', user_id=g.user.id) }}">Click to add more!</a>
+                    <a href="{{ url_for('notes.index', user_id=g.user.id) }}">Click to add more!</a>
                 {% elif g.user.notes.count() == 0 %}
                     <p>You have {{ g.user.notes.count() }} notes.</p>
-                    <a href="{{ url_for('notes_index', user_id=g.user.id) }}">Click to add a one!</a>
+                    <a href="{{ url_for('notes.index', user_id=g.user.id) }}">Click to add a one!</a>
                 {% else %}
                     <p>You have {{ g.user.notes.count() }} notes.</p>
-                    <a href="{{ url_for('notes_index', user_id=g.user.id) }}">Click to check them out!</a>
+                    <a href="{{ url_for('notes.index', user_id=g.user.id) }}">Click to check them out!</a>
                 {% endif%}
             </div>
             </div>

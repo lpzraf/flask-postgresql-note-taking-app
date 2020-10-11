@@ -10,9 +10,9 @@
             <div class="ui clearing divider"></div>
             <h5>Written on {{ note.date }}</h5>
             <p>{{ note.note_body }}</p>
-            <a href="{{ url_for('notes_index', user_id=user.id) }}">See all the notes.</a>
+            <a href="{{ url_for('notes.index', user_id=user.id) }}">See all the notes.</a>
             <br>
-            <button class="ui button"><a href="{{ url_for('notes_edit', user_id=user.id, id=note.id) }}">Edit Note</a></button>
+            <button class="ui button"><a href="{{ url_for('notes.edit', user_id=user.id, id=note.id) }}">Edit Note</a></button>
       
         </div>
     </div>
