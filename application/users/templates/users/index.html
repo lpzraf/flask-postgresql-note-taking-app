@@ -10,12 +10,12 @@
 
 <p>{{ date }} - <span id="clock"></span></p>
 </div>
-  
+
 <div class="ui divider"></div>
 
 <div class="ui four column grid centered">
 
-    {% for user in users %} 
+    {% for user in users %}
 
         <div class="column">
             <div class="ui centered cards">
@@ -46,28 +46,7 @@
                 </div>
             </div>
         </div>
-    {% endfor %} 
+    {% endfor %}
 </div>
-
-<!-- modal  -->
-<div class="ui basic modal">
-    <div class="ui icon header">
-      <i class="archive icon"></i>
-      Archive Old Messages
-    </div>
-    <div class="content">
-      <p>Your inbox is getting full, would you like us to enable automatic archiving of old messages?</p>
-    </div>
-    <div class="actions">
-      <div class="ui red basic cancel inverted button">
-        <i class="remove icon"></i>
-        No
-      </div>
-      <div class="ui green ok inverted button">
-        <i class="checkmark icon"></i>
-        Yes
-      </div>
-    </div>
-  </div>
 
 {% endblock %}
