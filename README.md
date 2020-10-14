@@ -4,7 +4,7 @@
 1. Refactoring an older app from saving data locally in json to now connecting and using PostgreSQL
 2. Data modeling (one-to-many and many-to-many relationships)
 3. Creating tables and loading data to PostgreSQL
-4. CRUD and RESTful practices
+4. CRUD and RESTful best practices
 5. Routing with Flask
 6. Persisting session data
 7. Form submits in Flask
@@ -29,7 +29,7 @@
 ### Run it!
 1. Fork and git clone the repo
 2. Cd to `flask-postgresql-note-taking-app`
-3. Create virtual env running `python3 -m venv <name_of_virtualenv>`
+3. Create virtual env running `python3 -m venv venv`
 4. Activate venv running `source venv/bin/activate`
 5. Add dependencies running `pip3 install -r requierements.txt`
 6. Run `python app.py` and visit `http://0.0.0.0:80/login`
