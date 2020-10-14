@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Notes Homepage{% endblock %}
+{% block title %}All users{% endblock %}
 
 {% block content %}
 
@@ -16,7 +16,7 @@
 <div class="ui four column grid centered">
 
     {% for user in users %}
-
+      {% if g.user.id != user.id %}
         <div class="column">
             <div class="ui centered cards">
                 <div class="card">
@@ -33,19 +33,15 @@
                         </div>
                     </div>
                     <div class="extra content">
-                        <div class="ui tree buttons">
+                        <div class="ui two buttons">
                             <div class="ui basic green button"><a href="{{ url_for('notes.index', user_id=user.id) }}">Notes</a></div>
-                            <div class="ui basic blue button"><a href="{{ url_for('users.edit', user_id=user.id) }}">Edit</a></div>
-                            <div class="ui basic red button"><form action="{{url_for('users.show', user_id=user.id)}}?_method=DELETE" method="POST">
-                                {{delete_form.hidden_tag()}}
-                                <input type="submit" value="Delete">
-                                </form>
-                            </div>
+                            <div class="ui basic blue button"><a href="{{url_for('users.show', user_id=user.id)}}">Profile</a></div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+      {% endif %}
     {% endfor %}
 </div>
 

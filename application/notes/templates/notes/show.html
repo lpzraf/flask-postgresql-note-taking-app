@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Note{% endblock %}
+{% block title %}Note page.{% endblock %}
 
 {% block content %}
 
@@ -13,7 +13,7 @@
             <a href="{{ url_for('notes.index', user_id=user.id) }}">See all the notes.</a>
             <br>
             <button class="ui button"><a href="{{ url_for('notes.edit', user_id=user.id, id=note.id) }}">Edit Note</a></button>
-      
+
         </div>
     </div>
 

@@ -15,14 +15,14 @@
                 <li><a href="{{ url_for('users.index')}}" class="logo"><i class="pencil alternate icon"></i>Note-Taking App</a></li>
                 {% if g.user.username %}
                     <li><a href="{{ url_for('logout')}}">Sign out</a></li>
+                    <li><a href="{{url_for('users.show', user_id=g.user.id)}}">Profile</a></li>
                 {% else %}
                     <li><a href="{{ url_for('login')}}">Login</a></li>
                 {% endif %}
-                <li><a href="{{ url_for('profile')}}">Profile</a></li>
                 <li><a href="{{ url_for('users.index')}}">Friends</a></li>
                 <li><a href="{{ url_for('about')}}">About</a></li>
             </ul>
-        </nav>    
+        </nav>
         <br>
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
@@ -34,7 +34,7 @@
                         {{ msg }}
                     </div>
                 </div>
-    
+
                 {% endfor %}
             {% endif %}
         {% endwith %}

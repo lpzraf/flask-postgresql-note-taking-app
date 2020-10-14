@@ -1,7 +1,7 @@
 from flask import (render_template, request,
                    redirect, url_for, session,
-                   flash, Blueprint)
-from application.users.forms import UserForm, DeleteForm
+                   flash, Blueprint, g)
+from application.users.forms import UserForm, DeleteForm, EmptyForm
 from application.models import User
 from application import db, bcrypt
 import datetime
@@ -70,9 +70,10 @@ def edit(user_id):
 # users show
 @users_bp.route('/<int:user_id>', methods=['GET', 'PATCH', 'DELETE'])
 @ensure_authenticated
-@ensure_correct_user
 def show(user_id):
+    empty_form = EmptyForm()
     found_user = User.query.get(user_id)
+    delete_form = DeleteForm()
     if request.method == b'PATCH':
         form = UserForm(request.form)
         if form.validate():
@@ -88,6 +89,53 @@ def show(user_id):
         if delete_form.validate():
             db.session.delete(found_user)
             db.session.commit()
+            session.pop('user_id')
             flash('User Deleted!', 'positive')
+        return redirect(url_for('login'))
+    return render_template('users/show.html',
+                           user=found_user,
+                           empty_form=empty_form,
+                           delete_form=delete_form)
+
+
+# follow and unfollow routes
+@users_bp.route('/follow/<int:user_id>', methods=['POST'])
+@ensure_authenticated
+def follow(user_id):
+    form = EmptyForm()
+    curr_user_obj = g.user
+    found_user = User.query.get(user_id)
+    if form.validate_on_submit():
+        if found_user is None:
+            flash('User not found!', 'negative')
+            return redirect(url_for('users.index'))
+        if found_user == curr_user_obj:
+            flash('You cannot follow yourself!')
+            return redirect(url_for('users.show', user_id=found_user.id))
+        curr_user_obj.follow(found_user)
+        db.session.commit()
+        flash(f'You are following {found_user.username}!', 'positive')
+        return redirect(url_for('users.show', user_id=found_user.id))
+    else:
         return redirect(url_for('users.index'))
-    return render_template('users/show.html', user=found_user)
+
+
+@users_bp.route('/unfollow/<int:user_id>', methods=['POST'])
+@ensure_authenticated
+def unfollow(user_id):
+    form = EmptyForm()
+    found_user = User.query.get(user_id)
+    curr_user_obj = g.user
+    if form.validate_on_submit():
+        if found_user is None:
+            flash('User not found!', 'negative')
+            return redirect(url_for('users.index'))
+        if found_user == curr_user_obj:
+            flash('You cannot unfollow yourself!', 'negative')
+            return redirect(url_for('users.show', user_id=found_user.id))
+        curr_user_obj.unfollow(found_user)
+        db.session.commit()
+        flash(f'You are not following {found_user.username}!', 'negative')
+        return redirect(url_for('users.show', user_id=found_user.id))
+    else:
+        return redirect(url_for('users.index'))

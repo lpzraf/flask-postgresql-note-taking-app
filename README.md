@@ -2,7 +2,7 @@
 
 ### Built this app to practice:
 1. Refactoring an older app from saving data locally in json to now connecting and using PostgreSQL
-2. Data modeling with Flask SQLAlchemy
+2. Data modeling (one-to-many and many-to-many relationships)
 3. Creating tables and loading data to PostgreSQL
 4. CRUD and RESTful practices
 5. Routing with Flask

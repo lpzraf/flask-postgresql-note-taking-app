@@ -72,10 +72,3 @@ def login():
 def logout():
     session.pop('user_id')
     return redirect(url_for('login'))
-
-
-# profile
-@app.route('/profile')
-@ensure_authenticated
-def profile():
-    return render_template('profile.html')

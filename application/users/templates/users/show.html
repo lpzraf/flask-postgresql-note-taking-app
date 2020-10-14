@@ -8,20 +8,75 @@
     <a class="image" href="{{ url_for('notes.index', user_id=user.id) }}">
         <img src="/static/matthew.png">
     </a>
+
     <div class="content">
-        <a class="header" href="{{ url_for('notes.index', user_id=user.id) }}">Hi {{ user.username }}!</a>
+        <a class="header" href="{{ url_for('notes.index', user_id=user.id) }}">{{user.username}}</a>
             <div class="meta">
-            <span class="date">Joined in 2013</span>
-    </div>
-    <div class="description">
-       <a href="{{ url_for('notes.index', user_id=user.id) }}">Click to see your notes.</a>
-    </div>
+                <span class="date">Member since {{ user.date.strftime('%Y-%m-%d') }}</span>
+            </div>
+
+        <div class="description">
+            <!-- session user id == user url id show personalized card-->
+            {% if g.user.id == user.id %}
+                {% if g.user.notes.count() == 1 %}
+                    <p>You have {{ g.user.notes.count() }} note.</p>
+                    <a href="{{ url_for('notes.index', user_id=g.user.id) }}">Click to add more!</a>
+                {% elif g.user.notes.count() == 0 %}
+                    <p>You have {{ g.user.notes.count() }} notes.</p>
+                    <a href="{{ url_for('notes.index', user_id=g.user.id) }}">Click to add a one!</a>
+                {% elif g.user.notes.count() > 1 %}
+                    <p>You have {{ g.user.notes.count() }} notes.</p>
+                    <a href="{{ url_for('notes.index', user_id=g.user.id) }}">Click to check them out!</a>
+                {% endif%}
+            {% else %}
+            <!-- non personalized card elements -->
+                {% if user.notes.count() == 1 %}
+                    <p>Your friend has {{ user.notes.count() }} note.</p>
+                    <a href="{{ url_for('notes.index', user_id=user.id) }}">Click to add more!</a>
+                {% elif user.notes.count() == 0 %}
+                    <p>Your friend has {{ user.notes.count() }} notes.</p>
+                    <a href="{{ url_for('notes.index', user_id=user.id) }}">Click to add a one!</a>
+                {% else %}
+                    <p>Your friend has {{ user.notes.count() }} notes.</p>
+                    <a href="{{ url_for('notes.index', user_id=user.id) }}">Click to check them out!</a>
+                {% endif%}
+            {% endif%}
+        </div>
     </div>
     <div class="extra content">
-    <a>
-        <i class="user icon"></i>
-        22 Friends
-    </a>
+        <a>
+            <i class="user icon"></i>
+            {% if user.followers.count() == 1 %}
+                {{ user.followers.count() }} follower, {{ user.followed.count() }} following.
+            {% else %}
+                {{ user.followers.count() }} followers, {{ user.followed.count() }} following.
+            {% endif %}
+        </a>
+        <div class="fluid ui buttons">
+            {% if g.user.id == user.id %}
+                <button class="ui basic blue button"><a href="{{ url_for('users.edit', user_id=user.id) }}">Edit</a></button>
+                <button class="ui basic red button">
+                    <form action="{{url_for('users.show', user_id=user.id)}}?_method=DELETE" method="POST">
+                        {{delete_form.hidden_tag()}}
+                        <input type="submit" value="Delete">
+                    </form>
+                </button>
+            {% elif not g.user.is_following(user) %}
+                <button class="ui basic blue button">
+                    <form action="{{ url_for('users.follow', user_id=user.id) }}" method="post">
+                        {{ empty_form.hidden_tag() }}
+                        {{ empty_form.submit(value='Follow') }}
+                    </form>
+                </button>
+            {% else %}
+                <button class="ui basic red button">
+                    <form action="{{ url_for('users.unfollow', user_id=user.id) }}" method="post">
+                        {{ empty_form.hidden_tag() }}
+                        {{ empty_form.submit(value='Unfollow') }}
+                    </form>
+                </button>
+        </div>
+        {% endif %}
     </div>
 </div>
 
