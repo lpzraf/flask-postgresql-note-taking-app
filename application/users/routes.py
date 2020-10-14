@@ -91,7 +91,7 @@ def show(user_id):
             db.session.commit()
             session.pop('user_id')
             flash('User Deleted!', 'positive')
-        return redirect(url_for('login'))
+        return redirect(url_for('auth.login'))
     return render_template('users/show.html',
                            user=found_user,
                            empty_form=empty_form,

@@ -7,7 +7,7 @@ def ensure_authenticated(fn):
     def wrapper(*args, **kwargs):
         if session.get('user_id') is None:
             flash('Please log in first!', 'negative')
-            return redirect(url_for('login'))
+            return redirect(url_for('auth.login'))
         return fn(*args, **kwargs)
     return wrapper
 

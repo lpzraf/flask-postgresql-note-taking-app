@@ -4,7 +4,7 @@ from flask_bcrypt import Bcrypt
 db = SQLAlchemy()
 bcrypt = Bcrypt()
 
-# testing association table
+# association table
 followers = db.Table('followers', db.Column('follower_id', db.Integer,
                      db.ForeignKey('users.id')), db.Column('followed_id',
                      db.Integer, db.ForeignKey('users.id')))
@@ -21,7 +21,7 @@ class User(db.Model):
         backref='user',
         lazy='dynamic',
         cascade="all, delete")
-    # testing many-to-many
+    # many-to-many
     followed = db.relationship(
         'User', secondary=followers,
         primaryjoin=(followers.c.follower_id == id),
@@ -47,7 +47,7 @@ class User(db.Model):
                 return found_user
         return False
 
-    # testing add and remove relationships
+    # add and remove relationships
     def follow(self, user):
         if not self.is_following(user):
             self.followed.append(user)

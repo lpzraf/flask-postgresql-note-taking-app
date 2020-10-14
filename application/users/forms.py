@@ -16,6 +16,6 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', [validators.DataRequired()])
 
 
-# testing follow or unfollow form
+# follow or unfollow form
 class EmptyForm(FlaskForm):
     submit = SubmitField('Submit')
