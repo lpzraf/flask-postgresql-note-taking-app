@@ -1,0 +1,3 @@
+*.py linguist-vendored=true
+*.css linguist-vendored=true
+*.js linguist-vendored=true
